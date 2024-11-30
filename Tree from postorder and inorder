@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+int search(int inorder[], int start, int end, int value) {
+    for (int i = start; i <= end; i++) {
+        if (inorder[i] == value) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+Node* buildTree(int inorder[], int postorder[], int start, int end, int* postIndex) {
+    if (start > end) {
+        return NULL;
+    }
+    Node* root = createNode(postorder[*postIndex]);
+    (*postIndex)--;
+    if (start == end) {
+        return root;
+    }
+    int inorderIndex = search(inorder, start, end, root->data);
+    root->right = buildTree(inorder, postorder, inorderIndex + 1, end, postIndex);
+    root->left = buildTree(inorder, postorder, start, inorderIndex - 1, postIndex);
+    return root;
+}
+
+void printInorder(Node* root) {
+    if (root == NULL) {
+        return;
+    }
+    printInorder(root->left);
+    printf("%d ", root->data);
+    printInorder(root->right);
+}
+
+int main() {
+    int inorder[] = {9, 3, 15, 20, 7};
+    int postorder[] = {9, 15, 7, 20, 3};
+    int n = sizeof(inorder) / sizeof(inorder[0]);
+    int postIndex = n - 1;
+    Node* root = buildTree(inorder, postorder, 0, n - 1, &postIndex);
+    printInorder(root);
+    return 0;
+}
