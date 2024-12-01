@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <limits.h>
+#include <stdbool.h>
+
+
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+
+struct Node* newNode(int data) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = data;
+    node->left = node->right = NULL;
+    return node;
+}
+
+
+bool isBSTUtil(struct Node* node, int min, int max) {
+    // An empty tree is a BST
+    if (node == NULL) {
+        return true;
+    }
+
+    
+    if (node->data <= min || node->data >= max) {
+        return false; 
+    }
+
+    bool leftIsBST = isBSTUtil(node->left, min, node->data);
+
+   
+    bool rightIsBST = isBSTUtil(node->right, node->data, max);
+
+    return leftIsBST && rightIsBST;
+}
+
+
+bool isBST(struct Node* root) {
+    return isBSTUtil(root, INT_MIN, INT_MAX);
+}
+
+
+int main() {
+    // Create a sample tree
+    struct Node* root = newNode(10);
+    root->left = newNode(5);
+    root->right = newNode(20);
+    root->left->left = newNode(3);
+    root->left->right = newNode(7);
+    root->right->left = newNode(15);
+    root->right->right = newNode(25);
+
+  
+    if (isBST(root)) {
+        printf("The tree is a Binary Search Tree.\n");
+    } else {
+        printf("The tree is not a Binary Search Tree.\n");
+    }
+
+    return 0;
+}
