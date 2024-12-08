@@ -1,0 +1,45 @@
+#include <iostream>
+using namespace std;
+
+// Define the structure of a tree node
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int value) {
+        data = value;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+
+// Function to count even nodes in a binary tree
+int countEvenNodes(Node* root) {
+    if (root == nullptr) {
+        return 0; // Base case: empty tree has 0 even nodes
+    }
+
+    // Count even nodes in the left and right subtrees
+    int leftCount = countEvenNodes(root->left);
+    int rightCount = countEvenNodes(root->right);
+
+    // Check if the current node's value is even
+    int isEven = (root->data % 2 == 0) ? 1 : 0;
+
+    // Total count is the sum of left, right, and current node's count
+    return leftCount + rightCount + isEven;
+}
+
+int main() {
+    // Example binary tree
+    Node* root = new Node(10);
+    root->left = new Node(20);
+    root->right = new Node(15);
+    root->left->left = new Node(25);
+    root->left->right = new Node(30);
+
+    cout << "Number of even nodes: " << countEvenNodes(root) << endl;
+
+    return 0;
+}
